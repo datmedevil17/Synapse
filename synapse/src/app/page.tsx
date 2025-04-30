@@ -68,15 +68,14 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-white overflow-hidden">
       {isConnected && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
+        <>
           {profile && !showForm ? (
-            <div className="relative bg-white p-6 rounded-2xl shadow-xl border border-blue-100 max-w-md w-full mx-4 transform transition-all">
-              <div className="flex items-center space-x-4">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+            <div className="fixed bottom-4 right-10 z-50">
+              <div className="bg-white p-4 rounded-2xl shadow-lg border border-blue-100 flex items-center space-x-3 hover:shadow-xl transition-shadow">
+                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-8 w-8 text-blue-600"
+                    className="h-5 w-5 text-blue-600"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -89,71 +88,74 @@ export default function Home() {
                     />
                   </svg>
                 </div>
-                <div>
-                  <h3 className="text-2xl font-medium text-blue-900">
+                <div className="min-w-0">
+                  <h3 className="text-sm font-medium text-blue-900 truncate">
                     {profile.username}
                   </h3>
-                  <p className="text-blue-600">{profile.email}</p>
+                  <p className="text-xs text-blue-600 truncate">{profile.email}</p>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="relative bg-white p-8 rounded-2xl shadow-xl border border-blue-100 max-w-md w-full mx-4 transform transition-all">
-              <h3 className="text-2xl font-medium text-blue-900 mb-6">
-                Complete Your Profile
-              </h3>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label
-                    htmlFor="username"
-                    className="block text-sm font-medium text-blue-700 mb-1"
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
+              <div className="relative bg-white p-8 rounded-2xl shadow-xl border border-blue-100 max-w-md w-full mx-4">
+                <h3 className="text-2xl font-medium text-blue-900 mb-6">
+                  Complete Your Profile
+                </h3>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label
+                      htmlFor="username"
+                      className="block text-sm font-medium text-blue-700 mb-1"
+                    >
+                      Username
+                    </label>
+                    <input
+                      id="username"
+                      type="text"
+                      placeholder="Enter your username"
+                      className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      value={formData.username}
+                      onChange={(e) =>
+                        setFormData({ ...formData, username: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-blue-700 mb-1"
+                    >
+                      Email
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      value={formData.email}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-blue-600 text-white py-3 px-6 rounded-xl hover:bg-blue-700 transition-colors font-medium disabled:bg-blue-400 disabled:cursor-not-allowed"
                   >
-                    Username
-                  </label>
-                  <input
-                    id="username"
-                    type="text"
-                    placeholder="Enter your username"
-                    className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    value={formData.username}
-                    onChange={(e) =>
-                      setFormData({ ...formData, username: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-blue-700 mb-1"
-                  >
-                    Email
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full bg-blue-600 text-white py-3 px-6 rounded-xl hover:bg-blue-700 transition-colors font-medium disabled:bg-blue-400 disabled:cursor-not-allowed"
-                >
-                  {isLoading ? "Creating Profile..." : "Create Profile"}
-                </button>
+                    {isLoading ? "Creating Profile..." : "Create Profile"}
+                  </button>
 
-                {error && <p className="mt-2 text-red-600 text-sm">{error}</p>}
-              </form>
+                  {error && <p className="mt-2 text-red-600 text-sm">{error}</p>}
+                </form>
+              </div>
             </div>
           )}
-        </div>
+        </>
       )}
 
       <main className="flex-1">

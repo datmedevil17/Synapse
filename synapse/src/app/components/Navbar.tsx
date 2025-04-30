@@ -20,53 +20,62 @@ const Navbar = () => {
   ]
 
   return (
-    <nav className='bg-gray-800 p-4'>
-      <div className='container mx-auto flex flex-wrap items-center justify-between'>
-        {/* Logo/Brand */}
-        <div className='flex items-center flex-shrink-0 text-white mr-6'>
-          <Link
-            href='/'
-            className='font-bold text-xl tracking-tight'>
-            Synapse
-          </Link>
-        </div>
-
-        {/* Mobile menu button */}
-        <div className='block lg:hidden'>
-          <button
-            onClick={toggleMenu}
-            className='flex items-center px-3 py-2 border rounded text-gray-200 border-gray-400 hover:text-white hover:border-white'>
-            <svg
-              className='fill-current h-3 w-3'
-              viewBox='0 0 20 20'
-              xmlns='http://www.w3.org/2000/svg'>
-              <title>Menu</title>
-              <path d='M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z' />
-            </svg>
-          </button>
-        </div>
-
-        {/* Navigation Links */}
-        <div
-          className={`w-full block flex-grow lg:flex lg:items-center lg:w-auto ${
-            isMenuOpen ? 'block' : 'hidden lg:block'
-          }`}>
-          <div className='text-sm lg:flex-grow'>
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.path}
-                className={`block mt-4 lg:inline-block lg:mt-0 px-4 py-2 rounded transition-colors duration-200 ${
-                  pathname === item.path
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-200 hover:text-white hover:bg-gray-700'
-                } mr-4`}>
-                {item.name}
-              </Link>
-            ))}
+    <nav className='bg-gradient-to-r from-gray-900 to-gray-800 shadow-lg'>
+      <div className='container mx-auto px-4 py-3'>
+        <div className='flex items-center justify-between'>
+          {/* Logo/Brand */}
+          <div className='flex items-center'>
+            <Link
+              href='/'
+              className='text-2xl font-bold text-white hover:text-blue-400 transition-colors duration-200'>
+              Synapse
+            </Link>
           </div>
-          <div className='mt-4 lg:mt-0'>
-            <ConnectButton />
+
+          {/* Mobile menu button */}
+          <div className='lg:hidden'>
+            <button
+              onClick={toggleMenu}
+              className='p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200'>
+              <svg
+                className='h-6 w-6'
+                fill='none'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth='2'
+                viewBox='0 0 24 24'
+                stroke='currentColor'>
+                {isMenuOpen ? (
+                  <path d='M6 18L18 6M6 6l12 12' />
+                ) : (
+                  <path d='M4 6h16M4 12h16M4 18h16' />
+                )}
+              </svg>
+            </button>
+          </div>
+
+          {/* Navigation Links */}
+          <div
+            className={`absolute lg:static left-0 right-0 bg-gray-900 lg:bg-transparent mt-2 lg:mt-0 ${
+              isMenuOpen ? 'block' : 'hidden'
+            } lg:block`}>
+            <div className='flex flex-col lg:flex-row items-center space-y-4 lg:space-y-0 lg:space-x-6 p-4 lg:p-0'>
+              {navItems.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.path}
+                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                    pathname === item.path
+                      ? 'bg-blue-600 text-white shadow-lg'
+                      : 'text-gray-300 hover:text-white hover:bg-gray-700'
+                  }`}>
+                  {item.name}
+                </Link>
+              ))}
+              <div className='lg:ml-4'>
+                <ConnectButton />
+              </div>
+            </div>
           </div>
         </div>
       </div>
