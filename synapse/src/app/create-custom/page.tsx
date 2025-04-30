@@ -1,22 +1,85 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { createCustomBot } from '@/contracts/function' // Assuming you have this function
+import {
+  createCustomBot,
+  getAgent,
+  getCustomBotPrice,
+  getNextTokenId,
+} from '@/contracts/function'
 import { useConfig } from 'wagmi'
 import { waitForTransactionReceipt } from '@wagmi/core'
 import { parseEther } from 'viem'
+import { getJsonFromIpfs, uploadToIpfsJson } from '@/lib/pinata'
 
 export default function CreateCustom() {
+  const [name, setName] = useState('') // Added name state
   const [prompt, setPrompt] = useState('')
   const [price, setPrice] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const config = useConfig()
 
+  interface Agent {
+    id?: number
+    name?: string
+    description?: string
+    isCustom?: boolean
+    memories?: string[]
+    languages?: string[]
+    prompt: string
+    price?: number
+    owner?: `0x${string}`
+  }
+
+  interface AgentData {
+    name: string
+    prompt: string
+  }
+
+  const [agentsData, setAgentsData] = useState<Agent[]>([])
+
+  const fetchAgents = async () => {
+    try {
+      const totalAgents = await getNextTokenId()
+      let agentsData: Agent[] = []
+      const n = Number(totalAgents)
+      for (let i = 0; i < n; i++) {
+        const agent = await getAgent(i)
+        const typedAgent: Agent = agent as Agent
+        if (typedAgent.isCustom) {
+          const url = typedAgent.prompt
+          const obj = await getJsonFromIpfs(url)
+          const { name, prompt } = obj as AgentData
+          typedAgent.id = i
+          typedAgent.prompt = prompt
+          typedAgent.name = name
+          typedAgent.price = Number(await getCustomBotPrice(i))
+          agentsData.push(typedAgent)
+        }
+      }
+      console.log('Agents:', agentsData)
+      if (agentsData.length > 0) {
+        setAgentsData(agentsData)
+      }
+    } catch (error) {
+      console.error('Error fetching agents:', error)
+    }
+  }
+
+  useEffect(() => {
+    fetchAgents()
+  }, [])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     // Basic validation
+    if (!name.trim()) {
+      toast.info('Please enter a name for your agent')
+      return
+    }
+
     if (!prompt.trim()) {
       toast.info('Please enter a prompt')
       return
@@ -32,10 +95,8 @@ export default function CreateCustom() {
     try {
       // Convert price to the format your contract expects (e.g., from ETH to wei)
       const priceInWei = parseEther(price)
-
-      // Call your contract function
-      const txr = await createCustomBot(prompt, priceInWei)
-
+      const url = await uploadToIpfsJson({name, prompt})
+      const txr = await createCustomBot(url, priceInWei) // Update this line if your function signature is different
       // Wait for transaction confirmation
       await waitForTransactionReceipt(config, {
         hash: txr,
@@ -44,6 +105,7 @@ export default function CreateCustom() {
       toast.success('Custom agent created successfully!')
 
       // Reset form after successful creation
+      setName('')
       setPrompt('')
       setPrice('')
     } catch (error) {
@@ -63,6 +125,28 @@ export default function CreateCustom() {
       <form
         onSubmit={handleSubmit}
         className='space-y-6 bg-gray-50 p-6 rounded-lg shadow-md text-black'>
+        {/* Name Input */}
+        <div>
+          <label
+            htmlFor='name'
+            className='block text-sm font-medium text-gray-700 mb-1'>
+            Agent Name
+          </label>
+          <input
+            type='text'
+            id='name'
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder='My Custom Agent'
+            className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+            required
+            disabled={isLoading}
+          />
+          <p className='text-xs text-gray-500 mt-1'>
+            Enter a descriptive name for your custom agent.
+          </p>
+        </div>
+
         {/* Prompt Input */}
         <div>
           <label
