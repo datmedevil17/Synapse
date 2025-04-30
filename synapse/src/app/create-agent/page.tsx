@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from 'react'
 import { PlusCircle, X } from 'lucide-react'
-import { createAgent, createProfile } from '@/contracts/function'
+import { createAgent, createProfile, getAgent, getNextTokenId } from '@/contracts/function'
 import { toast } from 'sonner'
 import { waitForTransactionReceipt } from 'wagmi/actions'
 import { useConfig } from 'wagmi'
+import { get } from 'http'
 export default function Home() {
   const [botName, setBotName] = useState('')
   const [description, setDescription] = useState('')
@@ -15,8 +16,23 @@ export default function Home() {
   const config = useConfig()
   // Predefined language options
   const languageOptions = ['English', 'Hindi']
+  const fetchAgents = async () => {
+    try {
+        const totalAgents = await getNextTokenId();
+        const agentsData = [];
+        const n = Number(totalAgents);
+        for(let i=0;i<n;i++){
+            const agent = await getAgent(i);
+            agentsData.push(agent);
+        }
+        console.log('Agents:', agentsData);
+    }
+    catch (error) {
+        console.error('Error fetching agents:', error)
+    }
+  }
   useEffect(() => {
-    const totalAgents = 
+    fetchAgents()
   },[])
   const addMemory = () => {
     if (newMemory.trim()) {
