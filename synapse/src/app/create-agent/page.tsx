@@ -1,16 +1,23 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PlusCircle, X } from 'lucide-react'
-
+import { createAgent, createProfile } from '@/contracts/function'
+import { toast } from 'sonner'
+import { waitForTransactionReceipt } from 'wagmi/actions'
+import { useConfig } from 'wagmi'
 export default function Home() {
   const [botName, setBotName] = useState('')
   const [description, setDescription] = useState('')
   const [newMemory, setNewMemory] = useState('')
   const [memories, setMemories] = useState<string[]>([])
-  const [newLanguage, setNewLanguage] = useState('')
   const [languages, setLanguages] = useState<string[]>([])
-
+  const config = useConfig()
+  // Predefined language options
+  const languageOptions = ['English', 'Hindi']
+  useEffect(() => {
+    const totalAgents = 
+  },[])
   const addMemory = () => {
     if (newMemory.trim()) {
       setMemories([...memories, newMemory.trim()])
@@ -22,26 +29,42 @@ export default function Home() {
     setMemories(memories.filter((_, i) => i !== index))
   }
 
-  const addLanguage = () => {
-    if (newLanguage.trim()) {
-      setLanguages([...languages, newLanguage.trim()])
-      setNewLanguage('')
+  const handleLanguageChange = (language: string) => {
+    if (languages.includes(language)) {
+      // Remove if already selected
+      setLanguages(languages.filter((lang) => lang !== language))
+    } else {
+      // Add if not selected
+      setLanguages([...languages, language])
     }
   }
 
-  const removeLanguage = (index: number) => {
-    setLanguages(languages.filter((_, i) => i !== index))
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Form submission will be handled by you
-    console.log({
-      botName,
-      description,
-      memories,
-      languages,
-    })
+    if (!botName || !description) {
+      toast.info('Please fill in all required fields')
+      return
+    }
+    if (memories.length === 0) {
+      toast.info('Please add at least one memory')
+      return
+    }
+    if (languages.length === 0) {
+      toast.info('Please select at least one language')
+      return
+    }
+
+    try {
+      const txr = await createAgent(botName, memories, languages, description)
+      await waitForTransactionReceipt(config, {
+        hash: txr,
+      })
+      console.log('Agent created successfully!')
+      toast.success('Agent created successfully!')
+    } catch (error) {
+      toast.error('Failed to create agent')
+      console.error(error)
+    }
   }
 
   return (
@@ -50,7 +73,7 @@ export default function Home() {
 
       <form
         onSubmit={handleSubmit}
-        className='space-y-6 bg-gray-50 p-6 rounded-lg shadow-md'>
+        className='space-y-6 bg-gray-50 p-6 rounded-lg shadow-md text-black'>
         {/* Bot Name */}
         <div>
           <label
@@ -107,43 +130,47 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Languages */}
+        {/* Languages with Checkboxes */}
         <div>
-          <label className='block text-sm font-medium text-gray-700 mb-1'>
+          <label className='block text-sm font-medium text-gray-700 mb-2'>
             Languages
           </label>
-          <div className='flex'>
-            <input
-              type='text'
-              value={newLanguage}
-              onChange={(e) => setNewLanguage(e.target.value)}
-              placeholder='Add a language'
-              className='flex-grow px-3 py-2 border border-gray-300 rounded-l-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'
-            />
-            <button
-              type='button'
-              onClick={addLanguage}
-              className='bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition-colors'>
-              <PlusCircle size={20} />
-            </button>
-          </div>
-
-          {/* Language List */}
-          <div className='mt-2 flex flex-wrap gap-2'>
-            {languages.map((language, index) => (
+          <div className='space-y-2'>
+            {languageOptions.map((language) => (
               <div
-                key={index}
-                className='flex items-center bg-blue-100 px-3 py-1 rounded-full'>
-                <span>{language}</span>
-                <button
-                  type='button'
-                  onClick={() => removeLanguage(index)}
-                  className='text-blue-500 hover:text-blue-700 ml-2'>
-                  <X size={16} />
-                </button>
+                key={language}
+                className='flex items-center'>
+                <input
+                  type='checkbox'
+                  id={`language-${language}`}
+                  checked={languages.includes(language)}
+                  onChange={() => handleLanguageChange(language)}
+                  className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded'
+                />
+                <label
+                  htmlFor={`language-${language}`}
+                  className='ml-2 block text-sm text-gray-900'>
+                  {language}
+                </label>
               </div>
             ))}
           </div>
+
+          {/* Selected Languages Display */}
+          {languages.length > 0 && (
+            <div className='mt-2'>
+              <p className='text-xs text-gray-500 mb-1'>Selected languages:</p>
+              <div className='flex flex-wrap gap-2'>
+                {languages.map((language) => (
+                  <div
+                    key={language}
+                    className='bg-blue-100 px-3 py-1 rounded-full text-sm'>
+                    {language}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Description */}
