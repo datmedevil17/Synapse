@@ -65,3 +65,58 @@ export async function getAllUserAgents(address) {
   })
   return result
 }
+
+// Get agent owner by tokenId
+export async function getAgentOwner(tokenId) {
+  const result = await readContract(config, {
+    address: contractAddress,
+    abi: contractABI,
+    functionName: 'getAgentOwner',
+    args: [tokenId],
+  })
+  return result
+}
+
+// Get custom bot price by tokenId
+export async function getCustomBotPrice(tokenId) {
+  const result = await readContract(config, {
+    address: contractAddress,
+    abi: contractABI,
+    functionName: 'getCustomBotPrice',
+    args: [tokenId],
+  })
+  return result
+}
+
+// Get next token ID
+export async function getNextTokenId() {
+  const result = await readContract(config, {
+    address: contractAddress,
+    abi: contractABI,
+    functionName: 'nextTokenId',
+    args: [],
+  })
+  return result
+}
+
+// Get profile by address from mapping
+export async function getProfileFromMapping(address) {
+  const result = await readContract(config, {
+    address: contractAddress,
+    abi: contractABI,
+    functionName: 'profiles',
+    args: [address],
+  })
+  return result
+}
+
+// Get agent by tokenId from mapping
+export async function getAgentFromMapping(tokenId) {
+  const result = await readContract(config, {
+    address: contractAddress,
+    abi: contractABI,
+    functionName: 'agents',
+    args: [tokenId],
+  })
+  return result
+}
