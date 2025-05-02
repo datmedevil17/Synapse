@@ -1,8 +1,8 @@
 import axios from "axios";
 
 // Add environment variables for API keys
-const PINATA_API_KEY = process.env.PINATA_API_KEY || "1ced050219057c289974";
-const PINATA_SECRET_KEY = process.env.PINATA_SECRET_KEY || "7a3b630fbbd48aef24bab6efc4302c2f8ff303ac3bfcc6f0b068e773d79de6b7";
+const PINATA_API_KEY = process.env.NEXT_PUBLIC_PINATA_API_KEY
+const PINATA_SECRET_KEY = process.env.NEXT_PUBLIC_PINATA_SECRET_KEY 
 
 interface PinataResponse {
   IpfsHash: string;
@@ -18,6 +18,7 @@ export const uploadToIpfs = async (file: File): Promise<string | undefined> => {
   try {
     const fileData = new FormData();
     fileData.append("file", file);
+    console.log(PINATA_API_KEY,PINATA_SECRET_KEY)
     const res = await axios.post<PinataResponse>(
       "https://api.pinata.cloud/pinning/pinFileToIPFS",
       fileData,

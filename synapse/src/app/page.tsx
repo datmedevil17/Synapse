@@ -6,6 +6,8 @@ import { MemoryBubbles } from "@/components/memory-bubbles";
 import { ParticleBackground } from "@/components/particle-background";
 import { useAccount } from "wagmi";
 import { getProfile, createProfile } from "@/contracts/function";
+import { waitForTransactionReceipt } from "wagmi/actions";
+import { config } from "@/lib/wagmi";
 
 export default function Home() {
   const { address, isConnected } = useAccount();
@@ -33,6 +35,7 @@ export default function Home() {
           setProfile(typedProfile);
           setShowForm(!typedProfile.exists);
         } catch (error) {
+          console.log(error)
           setShowForm(true);
         }
       }
@@ -50,6 +53,9 @@ export default function Home() {
         formData.username,
         formData.email
       );
+      await waitForTransactionReceipt(config, {
+        hash: transaction,
+      })
 
       if (address) {
         const userProfile = await getProfile(address);

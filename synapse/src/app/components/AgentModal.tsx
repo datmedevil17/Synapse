@@ -29,7 +29,6 @@ export function AgentModal({ isOpen, onClose, onAgentCreated }: AgentModalProps)
   const [description, setDescription] = useState('')
   const [memory, setMemory] = useState('')
   const [memories, setMemories] = useState<string[]>([])
-  const [language, setLanguage] = useState('english') // default to english
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(['English'])
   const [isLoading, setIsLoading] = useState(false)
 

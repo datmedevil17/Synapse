@@ -146,7 +146,7 @@ export function BrainAnimation() {
       ctx.stroke()
 
       // Draw connections
-      neurons.forEach((neuron, i) => {
+      neurons.forEach((neuron) => {
         neuron.connections.forEach((targetIndex) => {
           // Make sure the target index is valid
           if (targetIndex >= 0 && targetIndex < neurons.length) {
@@ -196,7 +196,7 @@ export function BrainAnimation() {
       })
 
       // Update and draw pulses
-      neurons.forEach((neuron, i) => {
+      neurons.forEach((neuron) => {
         // Randomly create new pulses
         if (Math.random() < 0.02 && neuron.connections.length > 0) {
           const targetIndex = neuron.connections[Math.floor(Math.random() * neuron.connections.length)]

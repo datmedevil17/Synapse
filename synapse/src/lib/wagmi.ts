@@ -1,5 +1,4 @@
 // lib/wagmi.ts
-import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { rootstockTestnet } from 'wagmi/chains';
 import { createConfig, http } from 'wagmi';
 

@@ -33,10 +33,6 @@ export default function CreateCustom() {
     price?: string
   }
 
-  interface AgentData {
-    name: string
-    prompt: string
-  }
 
   const [agentsData, setAgentsData] = useState<CustomAgent[]>([])
 
@@ -44,7 +40,7 @@ export default function CreateCustom() {
     setIsDataLoading(true)
     try {
       const totalAgents = await getNextTokenId()
-      let agentsData: CustomAgent[] = []
+      const agentsData: CustomAgent[] = []
       const n = Number(totalAgents)
       for (let i = 0; i < n; i++) {
         const agent = await getAgent(i)
