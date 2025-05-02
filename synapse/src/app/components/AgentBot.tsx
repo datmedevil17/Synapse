@@ -167,21 +167,20 @@ export default function AgentBot(props: AgentBotProps) {
   }
 
   return (
-    <div className='flex flex-col h-[600px] w-full max-w-3xl mx-auto border border-gray-700 rounded-lg shadow-lg bg-gray-900'>
-      {/* Chat header */}
-      <div className='flex items-center gap-3 p-4 border-b border-gray-700 bg-gray-800 rounded-t-lg'>
-        <div className='flex items-center justify-center w-10 h-10 rounded-full bg-blue-900 text-blue-300 font-bold'>
+    <div className="flex flex-col h-[600px] w-full bg-gradient-to-b from-gray-900 to-gray-800 rounded-lg overflow-hidden">
+      {/* Fixed Header - Reduced padding */}
+      <div className="flex items-center gap-4 p-3 bg-gradient-to-r from-gray-900 to-gray-800 border-b border-gray-700/50 backdrop-blur-lg">
+        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-900/50 text-blue-300 font-bold text-lg">
           {name.charAt(0).toUpperCase()}
         </div>
-        <div className='flex-1'>
-          <h3 className='font-semibold text-lg text-white'>{name}</h3>
-          <div className='flex items-center gap-2'>
-            <span className='text-xs text-gray-400'>Languages:</span>
-            <div className='flex gap-1'>
+        <div className="flex-1">
+          <h3 className="font-semibold text-lg text-white">{name}</h3>
+          <div className="flex items-center gap-2">
+            <div className="flex flex-wrap gap-1">
               {languages.map((lang, index) => (
                 <span
                   key={index}
-                  className='px-1.5 py-0.5 bg-blue-900 text-blue-300 rounded text-xs'>
+                  className="px-1.5 py-0.5 bg-blue-900/40 text-blue-300 rounded-full text-xs">
                   {lang}
                 </span>
               ))}
@@ -189,217 +188,212 @@ export default function AgentBot(props: AgentBotProps) {
           </div>
         </div>
         {isCustom && (
-          <div
-            className={`px-2 py-1 ${
-              paid ? 'bg-green-600' : 'bg-yellow-600'
-            } text-white text-xs rounded`}>
-            {paid ? 'Paid' : 'Premium'}
+          <div className={`px-2.5 py-1 ${
+            paid ? 'bg-green-600/20 text-green-400' : 'bg-yellow-600/20 text-yellow-400'
+          } text-sm rounded-full border ${
+            paid ? 'border-green-500/20' : 'border-yellow-500/20'
+          }`}>
+            {paid ? 'Paid Access' : 'Premium Bot'}
           </div>
         )}
       </div>
 
-      {/* Chat messages */}
-      <div className='flex-1 p-4 overflow-y-auto bg-gray-900'>
-        {history.length === 0 ? (
-          <div className='flex flex-col items-center justify-center h-full text-center'>
-            <div className='bg-blue-900 text-blue-300 p-3 rounded-full mb-4'>
+      {/* Chat Area - Adjusted padding */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="h-full px-4 py-4">
+          {history.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full max-w-2xl mx-auto text-center">
+              <div className='bg-blue-900 text-blue-300 p-3 rounded-full mb-4'>
+                {isCustom && !paid ? (
+                  <Wallet className='h-6 w-6' />
+                ) : (
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    stroke='currentColor'
+                    className='h-6 w-6'>
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth={2}
+                      d='M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z'
+                    />
+                  </svg>
+                )}
+              </div>
+              <h3 className='font-semibold text-lg mb-2 text-white'>
+                {name} is ready to chat
+              </h3>
+              <p className='text-gray-400 max-w-md'>{description}</p>
+
               {isCustom && !paid ? (
-                <Wallet className='h-6 w-6' />
+                <div className='mt-6 p-4 bg-gray-800 rounded-lg border border-gray-700'>
+                  <p className='text-yellow-300 font-medium mb-2'>
+                    Premium Custom Agent
+                  </p>
+                  <p className='text-gray-300 text-sm mb-4'>
+                    Kindly pay {price} TRBTC to use this custom agent
+                  </p>
+                  <button
+                    onClick={handlePay}
+                    disabled={paymentLoading || !isConnected}
+                    className={`w-full py-2 px-4 rounded-md text-white font-medium flex items-center justify-center ${
+                      paymentLoading || !isConnected
+                        ? 'bg-gray-600 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
+                    }`}>
+                    {paymentLoading ? (
+                      <>
+                        <svg
+                          className='animate-spin -ml-1 mr-3 h-5 w-5 text-white'
+                          xmlns='http://www.w3.org/2000/svg'
+                          fill='none'
+                          viewBox='0 0 24 24'>
+                          <circle
+                            className='opacity-25'
+                            cx='12'
+                            cy='12'
+                            r='10'
+                            stroke='currentColor'
+                            strokeWidth='4'></circle>
+                          <path
+                            className='opacity-75'
+                            fill='currentColor'
+                            d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'></path>
+                        </svg>
+                        Processing Payment...
+                      </>
+                    ) : !isConnected ? (
+                      'Connect Wallet to Pay'
+                    ) : (
+                      <>
+                        <Wallet className='mr-2 h-4 w-4' />
+                        Pay {price} TRBTC
+                      </>
+                    )}
+                  </button>
+                </div>
               ) : (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                  className='h-6 w-6'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z'
-                  />
-                </svg>
+                <div className='mt-4'>
+                  <h4 className='font-medium text-sm mb-2 text-gray-300'>
+                    Bot memories:
+                  </h4>
+                  <ul className='text-xs text-gray-400 space-y-1'>
+                    {memories.map((memory, index) => (
+                      <li
+                        key={index}
+                        className='flex items-center'>
+                        <span className='mr-2'>•</span>
+                        {memory}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
             </div>
-            <h3 className='font-semibold text-lg mb-2 text-white'>
-              {name} is ready to chat
-            </h3>
-            <p className='text-gray-400 max-w-md'>{description}</p>
-
-            {isCustom && !paid ? (
-              <div className='mt-6 p-4 bg-gray-800 rounded-lg border border-gray-700'>
-                <p className='text-yellow-300 font-medium mb-2'>
-                  Premium Custom Agent
-                </p>
-                <p className='text-gray-300 text-sm mb-4'>
-                  Kindly pay {price} TRBTC to use this custom agent
-                </p>
-                <button
-                  onClick={handlePay}
-                  disabled={paymentLoading || !isConnected}
-                  className={`w-full py-2 px-4 rounded-md text-white font-medium flex items-center justify-center ${
-                    paymentLoading || !isConnected
-                      ? 'bg-gray-600 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
-                  }`}>
-                  {paymentLoading ? (
-                    <>
-                      <svg
-                        className='animate-spin -ml-1 mr-3 h-5 w-5 text-white'
-                        xmlns='http://www.w3.org/2000/svg'
-                        fill='none'
-                        viewBox='0 0 24 24'>
-                        <circle
-                          className='opacity-25'
-                          cx='12'
-                          cy='12'
-                          r='10'
-                          stroke='currentColor'
-                          strokeWidth='4'></circle>
-                        <path
-                          className='opacity-75'
-                          fill='currentColor'
-                          d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'></path>
-                      </svg>
-                      Processing Payment...
-                    </>
-                  ) : !isConnected ? (
-                    'Connect Wallet to Pay'
-                  ) : (
-                    <>
-                      <Wallet className='mr-2 h-4 w-4' />
-                      Pay {price} TRBTC
-                    </>
-                  )}
-                </button>
-              </div>
-            ) : (
-              <div className='mt-4'>
-                <h4 className='font-medium text-sm mb-2 text-gray-300'>
-                  Bot memories:
-                </h4>
-                <ul className='text-xs text-gray-400 space-y-1'>
-                  {memories.map((memory, index) => (
-                    <li
-                      key={index}
-                      className='flex items-center'>
-                      <span className='mr-2'>•</span>
-                      {memory}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className='space-y-4'>
-            {history.map((msg, index) => (
-              <div
-                key={index}
-                className={`flex ${
-                  msg.role === 'user' ? 'justify-end' : 'justify-start'
-                }`}>
+          ) : (
+            <div className="space-y-6 max-w-4xl mx-auto">
+              {history.map((msg, index) => (
                 <div
-                  className={`max-w-[75%] p-3 rounded-lg ${
-                    msg.role === 'user'
-                      ? 'bg-blue-600 text-white rounded-br-none'
-                      : 'bg-gray-700 text-gray-200 rounded-bl-none'
-                  }`}>
-                  {msg.message}
-                </div>
-              </div>
-            ))}
-
-            {/* Loading indicator */}
-            {isLoading && (
-              <div className='flex justify-start'>
-                <div className='max-w-[75%] p-3 bg-gray-700 text-gray-200 rounded-lg rounded-bl-none'>
-                  <div className='flex space-x-2'>
-                    <div
-                      className='h-2 w-2 rounded-full bg-gray-500 animate-bounce'
-                      style={{ animationDelay: '0ms' }}></div>
-                    <div
-                      className='h-2 w-2 rounded-full bg-gray-500 animate-bounce'
-                      style={{ animationDelay: '300ms' }}></div>
-                    <div
-                      className='h-2 w-2 rounded-full bg-gray-500 animate-bounce'
-                      style={{ animationDelay: '600ms' }}></div>
+                  key={index}
+                  className={`flex ${
+                    msg.role === 'user' ? 'justify-end' : 'justify-start'
+                  } animate-fade-in`}>
+                  <div
+                    className={`max-w-[80%] p-4 rounded-2xl ${
+                      msg.role === 'user'
+                        ? 'bg-blue-600 text-white rounded-br-none shadow-lg'
+                        : 'bg-gray-800 text-gray-200 rounded-bl-none shadow-lg'
+                    }`}>
+                    {msg.message}
                   </div>
                 </div>
-              </div>
-            )}
+              ))}
 
-            <div ref={messagesEndRef} />
-          </div>
-        )}
+              {/* Loading indicator */}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="max-w-[80%] p-4 bg-gray-800 text-gray-200 rounded-2xl rounded-bl-none shadow-lg">
+                    <div className="flex space-x-2">
+                      <div className="h-3 w-3 rounded-full bg-gray-500 animate-pulse"></div>
+                      <div className="h-3 w-3 rounded-full bg-gray-500 animate-pulse delay-75"></div>
+                      <div className="h-3 w-3 rounded-full bg-gray-500 animate-pulse delay-150"></div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div ref={messagesEndRef} />
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Input area - Only show if not a custom bot or if paid */}
-      {!isCustom || paid ? (
-        <form
-          onSubmit={handleSubmit}
-          className='p-4 border-t border-gray-700 bg-gray-800'>
-          <div className='flex items-center gap-2'>
-            <input
-              type='text'
-              value={message}
-              onChange={handleInputChange}
-              placeholder={`Message ${name}...`}
-              className='flex-1 px-4 py-2 border border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-white placeholder-gray-400'
-              disabled={isLoading}
-            />
+      {/* Input Area - Reduced padding */}
+      <div className="w-full border-t border-gray-700/50 bg-gray-900/90 backdrop-blur-lg">
+        <div className="p-3">
+          {!isCustom || paid ? (
+            <form onSubmit={handleSubmit} className="relative">
+              <input
+                type="text"
+                value={message}
+                onChange={handleInputChange}
+                placeholder={`Message ${name}...`}
+                className="w-full px-4 py-2.5 bg-gray-800 text-white rounded-lg pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-700"
+                disabled={isLoading}
+              />
+              <button
+                type="submit"
+                disabled={isLoading || !message.trim()}
+                className={`absolute right-1.5 top-1/2 -translate-y-1/2 p-2 rounded-lg transition-all ${
+                  isLoading || !message.trim()
+                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}>
+                <Send size={18} />
+              </button>
+            </form>
+          ) : (
             <button
-              type='submit'
-              disabled={isLoading || !message.trim()}
-              className={`p-2 rounded-full ${
-                isLoading || !message.trim()
-                  ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
+              onClick={handlePay}
+              disabled={paymentLoading}
+              className={`w-full py-4 rounded-xl text-white font-medium flex items-center justify-center transition-all ${
+                paymentLoading
+                  ? 'bg-gray-700 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
               }`}>
-              <Send size={20} />
+              {paymentLoading ? (
+                <>
+                  <svg
+                    className='animate-spin -ml-1 mr-3 h-5 w-5 text-white'
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'>
+                    <circle
+                      className='opacity-25'
+                      cx='12'
+                      cy='12'
+                      r='10'
+                      stroke='currentColor'
+                      strokeWidth='4'></circle>
+                    <path
+                      className='opacity-75'
+                      fill='currentColor'
+                      d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'></path>
+                  </svg>
+                  Processing Payment...
+                </>
+              ) : (
+                <>
+                  <Wallet className='mr-2 h-5 w-5' />
+                  Pay {price} TRBTC to Unlock
+                </>
+              )}
             </button>
-          </div>
-        </form>
-      ) : (
-        <div className='p-4 border-t border-gray-700 bg-gray-800 flex justify-center'>
-          <button
-            onClick={handlePay}
-            disabled={paymentLoading}
-            className={`w-full max-w-xs py-2 px-4 rounded-full text-white font-medium flex items-center justify-center ${
-              paymentLoading
-                ? 'bg-gray-600 cursor-not-allowed'
-                : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
-            }`}>
-            {paymentLoading ? (
-              <>
-                <svg
-                  className='animate-spin -ml-1 mr-3 h-5 w-5 text-white'
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'>
-                  <circle
-                    className='opacity-25'
-                    cx='12'
-                    cy='12'
-                    r='10'
-                    stroke='currentColor'
-                    strokeWidth='4'></circle>
-                  <path
-                    className='opacity-75'
-                    fill='currentColor'
-                    d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'></path>
-                </svg>
-                Processing Payment...
-              </>
-            ) : (
-              <>
-                <Wallet className='mr-2 h-5 w-5' />
-                Pay {price} TRBTC to Unlock
-              </>
-            )}
-          </button>
+          )}
         </div>
-      )}
+      </div>
     </div>
   )
 }

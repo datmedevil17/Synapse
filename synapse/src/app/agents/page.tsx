@@ -23,7 +23,7 @@ export default function Home() {
       const totalAgents = await getNextTokenId()
       const agentsData: Agent[] = []
       const n = Number(totalAgents)
-      for (let i = 0; i < n; i++) {
+      for (let i = 2; i < n; i++) {
         const agent = (await getAgent(i)) as Agent
         agent.id = i
         agentsData.push(agent)
@@ -40,28 +40,37 @@ export default function Home() {
   }, [])
 
   return (
-    <div className='container mx-auto px-4 py-8'>
+    <div className='w-full px-4 py-8 bg-gradient-to-b from-slate-900 to-slate-800 min-h-screen'>
+      
       {/* Agents Grid */}
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-        {agents.map((agent, index) => (
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-[2000px] mx-auto'>
+        {agents
+          .filter(agent => agent.description !== "Custom Bot")
+          .map((agent, index) => (
           <Link
             href={`/agents/${agent.id}`}
             key={index}
-            className='block transition-transform hover:scale-105 hover:shadow-lg'>
-            <div className='bg-gray-800 rounded-lg shadow-md p-6 border border-gray-700 h-full'>
-              <h3 className='text-xl font-bold mb-2 text-white'>
-                {agent.name}
-              </h3>
-              <p className='text-gray-300 mb-4'>{agent.description}</p>
-              <div className='space-y-2'>
-                <div className='flex flex-wrap gap-1'>
-                  {agent.languages.map((lang, i) => (
-                    <span
-                      key={i}
-                      className='bg-blue-900 text-blue-200 px-2 py-1 rounded-full text-sm'>
-                      {lang}
-                    </span>
-                  ))}
+            className='block transition-all duration-300 hover:scale-102 hover:shadow-cyan-400/20'>
+            <div className='bg-slate-800/50 backdrop-blur-sm rounded-lg border border-cyan-500/30 p-6 h-full 
+                          hover:border-cyan-400 group relative overflow-hidden'>
+              <div className='absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-transparent opacity-0 
+                            group-hover:opacity-100 transition-opacity'></div>
+              <div className='relative z-10'>
+                <h3 className='text-xl font-bold mb-3 text-cyan-400 flex items-center gap-2'>
+                  <span className='w-2 h-2 bg-cyan-400 rounded-full animate-pulse'></span>
+                  {agent.name}
+                </h3>
+                <p className='text-slate-300 mb-4 leading-relaxed'>{agent.description}</p>
+                <div className='space-y-2'>
+                  <div className='flex flex-wrap gap-2'>
+                    {agent.languages.map((lang, i) => (
+                      <span
+                        key={i}
+                        className='bg-slate-700 text-cyan-300 px-3 py-1 rounded-md text-sm font-mono border border-cyan-500/30'>
+                        {lang}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -72,11 +81,16 @@ export default function Home() {
       {/* Add Agent Button */}
       <button
         onClick={() => setIsModalOpen(true)}
-        className='fixed bottom-8 right-8 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors'>
-        <PlusCircle size={24} />
+        className='fixed bottom-8 right-8 bg-cyan-500 text-slate-900 p-4 rounded-full shadow-lg 
+                   hover:bg-cyan-400 transition-all duration-300 group shadow-cyan-500/20'>
+        <PlusCircle size={24} className='group-hover:scale-110 transition-transform' />
+        <span className='absolute right-full mr-3 top-1/2 transform -translate-y-1/2 bg-slate-800 
+                        text-cyan-400 py-2 px-4 rounded-lg text-sm opacity-0 group-hover:opacity-100 
+                        transition-opacity whitespace-nowrap border border-cyan-500/30'>
+          Initialize New Agent
+        </span>
       </button>
 
-      {/* Agent Creation Modal */}
       <AgentModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
