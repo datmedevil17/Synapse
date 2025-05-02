@@ -1,3 +1,5 @@
 {
-    "wake.compiler.solc.remappings": []
+    "wake.compiler.solc.remappings": [
+        "synapse/=node_modules/synapse/"
+    ]
 }
