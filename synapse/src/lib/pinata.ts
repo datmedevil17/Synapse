@@ -1,8 +1,8 @@
 import axios from "axios";
 
 // Add environment variables for API keys
-const PINATA_API_KEY = process.env.PINATA_API_KEY || "35cb1bf7be19d2a8fa0d";
-const PINATA_SECRET_KEY = process.env.PINATA_SECRET_KEY || "2c2e9e43bca7a619154cb48e8b060c5643ea6220d0b7c9deb565fa491b3b3a50";
+const PINATA_API_KEY = process.env.PINATA_API_KEY || "1ced050219057c289974";
+const PINATA_SECRET_KEY = process.env.PINATA_SECRET_KEY || "7a3b630fbbd48aef24bab6efc4302c2f8ff303ac3bfcc6f0b068e773d79de6b7";
 
 interface PinataResponse {
   IpfsHash: string;

@@ -9,8 +9,8 @@ export const uploadToIpfs = async (file) => {
           fileData,
           {
             headers: {
-              pinata_api_key: "35cb1bf7be19d2a8fa0d",
-              pinata_secret_api_key: "2c2e9e43bca7a619154cb48e8b060c5643ea6220d0b7c9deb565fa491b3b3a50",
+              pinata_api_key: "1ced050219057c289974",
+              pinata_secret_api_key: "7a3b630fbbd48aef24bab6efc4302c2f8ff303ac3bfcc6f0b068e773d79de6b7",
               "Content-Type": "multipart/form-data",
             },
           }
@@ -30,8 +30,8 @@ export const uploadToIpfs = async (file) => {
       try{
         const res = await axios.post('https://api.pinata.cloud/pinning/pinJSONToIPFS',jsonData,{
           headers:{
-            pinata_api_key : '35cb1bf7be19d2a8fa0d',
-            pinata_secret_api_key : '2c2e9e43bca7a619154cb48e8b060c5643ea6220d0b7c9deb565fa491b3b3a50',
+            pinata_api_key: "1ced050219057c289974",
+            pinata_secret_api_key: "7a3b630fbbd48aef24bab6efc4302c2f8ff303ac3bfcc6f0b068e773d79de6b7",
             'Content-Type': 'application/json',
           }
         })

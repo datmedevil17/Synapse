@@ -15,7 +15,7 @@ const Navbar = () => {
 
   const navItems = [
     { name: 'Home', path: '/' },
-    { name: 'All Agents', path: '/create-agent' },
+    { name: 'All Agents', path: '/agents' },
     { name: 'All Custom Agents', path: '/custom-agents' },
   ]
 

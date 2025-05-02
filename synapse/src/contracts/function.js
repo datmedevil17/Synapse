@@ -120,3 +120,13 @@ export async function getAgentFromMapping(tokenId) {
   })
   return result
 }
+
+export async function payCustomBot(tokenId) {
+  const result = await writeContract(config, {
+    address: contractAddress,
+    abi: contractABI,
+    functionName: 'useCustomBot',
+    args: [tokenId],
+  })
+  return result
+}
