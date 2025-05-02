@@ -121,12 +121,13 @@ export async function getAgentFromMapping(tokenId) {
   return result
 }
 
-export async function payCustomBot(tokenId) {
+export async function payCustomBot(tokenId, price) {
   const result = await writeContract(config, {
     address: contractAddress,
     abi: contractABI,
     functionName: 'useCustomBot',
     args: [tokenId],
+    value: price
   })
   return result
 }

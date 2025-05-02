@@ -29,7 +29,7 @@ export default function CreateCustom() {
     isCustom: boolean
     memories: string[]
     languages: string[]
-    price?: number
+    price?: string
   }
 
   interface AgentData {
@@ -55,7 +55,9 @@ export default function CreateCustom() {
           typedAgent.id = i
           typedAgent.description = prompt
           typedAgent.name = name
-          typedAgent.price = Number(formatEther((await getCustomBotPrice(i)) as bigint))
+          const price = (formatEther((await getCustomBotPrice(i)) as bigint))
+          typedAgent.price = (price)
+          console.log(price)
           agentsData.push(typedAgent)
           console.log('Agent:', typedAgent)
         }

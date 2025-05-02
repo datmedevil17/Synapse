@@ -7,6 +7,7 @@ import { useAccount, useConfig } from 'wagmi'
 import { payCustomBot } from '@/contracts/function'
 import { toast } from 'sonner'
 import { waitForTransactionReceipt } from 'wagmi/actions'
+import { parseEther } from 'viem'
 
 interface Message {
   role: 'user' | 'agent'
@@ -20,7 +21,7 @@ interface Personality {
   languages: string[]
   isCustom: boolean
   owner : string
-  price?: number
+  price?: string
   id: number
 }
 
@@ -111,7 +112,7 @@ export default function AgentBot(props: AgentBotProps) {
     try {
       // Call the payment function from your contracts
       transact = toast.loading('Transaction in progress...')
-      const txHash = await payCustomBot(id)
+      const txHash = await payCustomBot(id, parseEther(price))
       toast.dismiss(transact)
       transact = toast.loading('Waiting for transaction confirmation...')
       await waitForTransactionReceipt(config, {

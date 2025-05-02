@@ -6,6 +6,7 @@ import { getAgent, getAgentOwner, getCustomBotPrice } from '@/contracts/function
 import AgentBot from '@/app/components/AgentBot'
 import { toast } from 'sonner'
 import { formatEther } from 'viem'
+import { getJsonFromIpfs } from '@/lib/pinata'
 
 interface Agent {
   name: string
@@ -15,7 +16,7 @@ interface Agent {
   isCustom: boolean
   owner: string
   id: number
-  price?: number
+  price?: string
 }
 
 export default function AgentPage() {
@@ -44,8 +45,12 @@ export default function AgentPage() {
           return
         }
         if(agentData.isCustom){
+          const url = agentData.name;
+          const { name, description } = await getJsonFromIpfs(url) as {name : string, description: string}
+          agentData.name = name
+          agentData.description = description
           const price = await getCustomBotPrice(Number(id)) as bigint;
-          agentData.price = Number(formatEther(price))
+          agentData.price = (formatEther(price))
         }
         setAgent(agentData)
       } catch (error) {
