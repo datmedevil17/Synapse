@@ -73,7 +73,7 @@ const Navbar = () => {
                   {item.name}
                 </Link>
               ))}
-              <div className='lg:ml-4 relative after:absolute after:inset-0 after:border after:border-cyan-800/30 after:rounded-lg after:-m-[1px]'>
+              <div className='lg:ml-4 relative rounded-lg border border-cyan-800/30'>
                 <ConnectButton />
               </div>
             </div>

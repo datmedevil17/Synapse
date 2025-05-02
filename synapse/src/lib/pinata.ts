@@ -18,7 +18,6 @@ export const uploadToIpfs = async (file: File): Promise<string | undefined> => {
   try {
     const fileData = new FormData();
     fileData.append("file", file);
-    console.log(PINATA_API_KEY,PINATA_SECRET_KEY)
     const res = await axios.post<PinataResponse>(
       "https://api.pinata.cloud/pinning/pinFileToIPFS",
       fileData,
